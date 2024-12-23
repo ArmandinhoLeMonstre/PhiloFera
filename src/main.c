@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 18:12:10 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/14 20:53:59 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/23 15:24:13 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,15 @@ int stock_args(t_data *data, int ac, char **av)
     else
 		data->meals_nbr = -1;
 	data->death = 0;
-	data->meals_check = 0;
+	data->meals_eaten = 0;
 	data->mutex_death = malloc(sizeof(pthread_mutex_t) * 1);
     data->mutex_meals = malloc(sizeof(pthread_mutex_t) * 1);
+	data->mutex_print = malloc(sizeof(pthread_mutex_t) * 1);
 	if (pthread_mutex_init(data->mutex_death, (void *)data) != 0)
         return (2);
     if (pthread_mutex_init(data->mutex_meals, (void *)data) != 0)
+		return (free(data->mutex_death), 2);
+	if (pthread_mutex_init(data->mutex_print, (void *)data) != 0)
 		return (free(data->mutex_death), 2);
 	return (0);
 }
@@ -38,23 +41,14 @@ int	allocate_forks(t_data *data)
 	int	i;
 
 	i = 0;
-	data->mutex_forks = malloc(sizeof(pthread_mutex_t) * (data->p_total));
-	while (i < data->p_total)
-    {
-		data->mutex_forks[i] = malloc(sizeof(pthread_mutex_t));
-        if (pthread_mutex_init(data->mutex_forks[i], (void *)data) != 0)
-        {
-            perror("Mutex initialization failed");
-            while (i > 0)
-            {
-                i--;
-                pthread_mutex_destroy(data->mutex_forks[i]);
-            }
-            free(data->mutex_forks);
-            return (2);
-        }
-        i++;
-    }
+	data->mutex_forks = malloc(sizeof(pthread_mutex_t) * data->p_total);
+	for (i = 0; i < data->p_total; i++) {
+		if (pthread_mutex_init(&data->mutex_forks[i], NULL) != 0) {
+			perror("Mutex initialization failed");
+			// Cleanup code here...
+		}
+	}
+
 	return (0);
 }
 
@@ -69,10 +63,11 @@ int	init_philo(t_data *data)
 	{
 		philo[i] = malloc(sizeof(t_philo));
 		philo[i]->n = i + 1;
+		philo[i]->time = 0;
 		philo[i]->data = malloc(sizeof(t_data));
 		philo[i]->data = data;
-		philo[i]->left_fork = data->mutex_forks[philo[i]->n - 1];
-    	philo[i]->right_fork = data->mutex_forks[philo[i]->n % data->p_total];
+		philo[i]->left_fork = &data->mutex_forks[philo[i]->n - 1];
+    	philo[i]->right_fork = &data->mutex_forks[philo[i]->n % data->p_total];
 		i++;
 	}
 	create_philo(philo, data);

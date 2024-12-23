@@ -6,13 +6,13 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 19:15:22 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/14 19:15:25 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/23 14:50:17 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long int	time_now(void)
+long long	time_now(void)
 {
 	struct timeval	now;
 
@@ -20,7 +20,7 @@ long int	time_now(void)
 	return ((now.tv_sec * 1000) + (now.tv_usec / 1000));
 }
 
-int	ft_usleep(long int time)
+int	ft_usleep(long long time)
 {
 	long int	start_time;
 
