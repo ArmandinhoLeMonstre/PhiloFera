@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 19:15:07 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/23 15:31:42 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/24 14:26:23 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	eat(t_philo	*p)
 	print_message(p, "is taking fork");
 	print_message(p, "is eating");
 	pthread_mutex_lock(p->data->mutex_meals);
+    // if (p->data->meals_eaten == (p->data->meals_nbr * p->data->p_total))
+    //     exit(1);
 	p->data->meals_eaten++;
 	pthread_mutex_unlock(p->data->mutex_meals);
 	p->t_last_meal = time_now();
@@ -53,7 +55,7 @@ void	*monitoring(void *arg)
 
     data = malloc(sizeof(t_data) * 1);
     data = p[0]->data;
-    ft_usleep(150);
+    //ft_usleep(150);
     while (1)
     {
         i = 0;
@@ -65,14 +67,14 @@ void	*monitoring(void *arg)
                 data->death = 1;
                 printf("%lld %d is dead\n", (time_now() - p[i]->time), p[i]->n);
                 pthread_mutex_unlock(data->mutex_death);
-                return NULL;
+                return (NULL);
             }
             if (data->meals_eaten == (data->meals_nbr * data->p_total))
             {
 				data->death = 1;
                 printf("%d meals have been eaten\n", data->meals_eaten);
                 pthread_mutex_unlock(data->mutex_death);
-                return NULL;
+                return (NULL);
             }
             pthread_mutex_unlock(data->mutex_death);
             i++;
@@ -88,14 +90,20 @@ void    *routine(void *arg)
 	    ft_usleep(150);
 	while (1)
 	{
+        pthread_mutex_lock(p->data->mutex_death);
 		if (p->data->death == 1)
 			break;
+        pthread_mutex_unlock(p->data->mutex_death);
 		eat(p);
+		pthread_mutex_lock(p->data->mutex_death);
 		if (p->data->death == 1)
 			break;
+        pthread_mutex_unlock(p->data->mutex_death);
 		sleep_n_think(p);
+		pthread_mutex_lock(p->data->mutex_death);
 		if (p->data->death == 1)
 			break;
+        pthread_mutex_unlock(p->data->mutex_death);
 	}
 	return NULL;
 }
@@ -103,34 +111,58 @@ void    *routine(void *arg)
 int create_philo(t_philo **philo, t_data *data)
 {
     int i;
-
     pthread_t th[data->p_total];
     pthread_t monitor;
+
+    i = 0;
 	data->time = time_now();
-    for (i = 0; i < data->p_total; i++) 
+    while (i < data->p_total) 
     {
         if (pthread_create(th + i, NULL, &routine, (void *)philo[i]) != 0) {
             perror("Failed to create thread");
             return 1;
         }
 		philo[i]->time = time_now();
+        i++;
     }
     if (pthread_create(&monitor, NULL, &monitoring, (void *)philo) != 0) 
     {
         perror("Failed to create thread");
         return 1;
     }
-    for (i = 0; i < data->p_total; i++) 
+    i = 0;
+    while (i < data->p_total) 
     {
         if (pthread_join(th[i], NULL) != 0) {
             return 3;
         }
-        printf("Thread %d has finished execution\n", i);
+        //printf("Thread %d has finished execution\n", i);
+        i++;
     }
     if (pthread_join(monitor, NULL) != 0) 
     {
         return 2;
     }
+    i = 0;
+    while (i < data->p_total)
+    {
+        pthread_mutex_destroy(&data->mutex_forks[i]);
+        i++;
+    }
+    // i = 0;
+    // while (i < data->p_total)
+    // {
+    //     //free(philo[i]->data);
+    //     free(philo[i]);
+    //     i++;
+    // }
+    // free(data->mutex_death);
+    // free(data->mutex_meals);
+    // free(data->mutex_print);
+    pthread_mutex_destroy(data->mutex_death);
+    pthread_mutex_destroy(data->mutex_meals);
+    pthread_mutex_destroy(data->mutex_print);
+    //free (data);
     // for (i = 0; i < data->p_total; i++)
     //     pthread_mutex_destroy(&data->mutex_forks[i]);
 	// pthread_mutex_destroy(data->mutex_death);

@@ -6,13 +6,12 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:59:01 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/23 14:10:06 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/24 13:49:35 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,12 +23,12 @@
 
 typedef struct s_data
 {
-    int     p_total;
     long long    starving_t;
     long long    eating_t;
     long long    sleeping_t;
-    int     meals_nbr;
     long long    time;
+    int     p_total;
+    int     meals_nbr;
     int death;
     int meals_check;
     int meals_eaten;
