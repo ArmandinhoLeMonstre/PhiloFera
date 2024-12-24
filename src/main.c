@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 18:12:10 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/24 13:52:15 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/24 17:32:31 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ int stock_args(t_data *data, int ac, char **av)
 		data->meals_nbr = -1;
 	data->death = 0;
 	data->meals_eaten = 0;
-	data->mutex_death = malloc(sizeof(pthread_mutex_t) * 1);
-    data->mutex_meals = malloc(sizeof(pthread_mutex_t) * 1);
 	data->mutex_print = malloc(sizeof(pthread_mutex_t) * 1);
-	if (pthread_mutex_init(data->mutex_death, (void *)data) != 0)
-        return (2);
-    if (pthread_mutex_init(data->mutex_meals, (void *)data) != 0)
-		return (free(data->mutex_death), 2);
+    // data->mutex_print = malloc(sizeof(pthread_mutex_t) * 1);
+	// data->mutex_print = malloc(sizeof(pthread_mutex_t) * 1);
 	if (pthread_mutex_init(data->mutex_print, (void *)data) != 0)
-		return (free(data->mutex_death), 2);
+        return (2);
+    // if (pthread_mutex_init(data->mutex_print, (void *)data) != 0)
+	// 	return (free(data->mutex_print), 2);
+	// if (pthread_mutex_init(data->mutex_print, (void *)data) != 0)
+	// 	return (free(data->mutex_print), 2);
 	return (0);
 }
 

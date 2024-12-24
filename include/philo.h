@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:59:01 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/24 13:49:35 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/24 17:32:13 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ typedef struct s_data
     int meals_check;
     int meals_eaten;
     pthread_mutex_t *mutex_forks;
-    pthread_mutex_t *mutex_death;
-    pthread_mutex_t *mutex_meals;
     pthread_mutex_t *mutex_print;
+    // pthread_mutex_t *mutex_print;
+    // pthread_mutex_t *mutex_print;
 } t_data;
 
 typedef struct s_philo

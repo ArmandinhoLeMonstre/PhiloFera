@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 19:15:07 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/24 14:26:23 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/24 17:35:21 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ void	eat(t_philo	*p)
 	pthread_mutex_lock(p->right_fork);
 	print_message(p, "is taking fork");
 	print_message(p, "is eating");
-	pthread_mutex_lock(p->data->mutex_meals);
+	pthread_mutex_lock(p->data->mutex_print);
     // if (p->data->meals_eaten == (p->data->meals_nbr * p->data->p_total))
     //     exit(1);
 	p->data->meals_eaten++;
-	pthread_mutex_unlock(p->data->mutex_meals);
+	pthread_mutex_unlock(p->data->mutex_print);
 	p->t_last_meal = time_now();
 	ft_usleep(p->data->eating_t);
 	pthread_mutex_unlock(p->left_fork);
@@ -55,28 +55,28 @@ void	*monitoring(void *arg)
 
     data = malloc(sizeof(t_data) * 1);
     data = p[0]->data;
-    //ft_usleep(150);
+    ft_usleep(150);
     while (1)
     {
         i = 0;
         while (i < data->p_total)
         {
-            pthread_mutex_lock(data->mutex_death);
+            pthread_mutex_lock(data->mutex_print);
             if ((time_now() - p[i]->t_last_meal) > data->starving_t)
             {
                 data->death = 1;
                 printf("%lld %d is dead\n", (time_now() - p[i]->time), p[i]->n);
-                pthread_mutex_unlock(data->mutex_death);
+                pthread_mutex_unlock(data->mutex_print);
                 return (NULL);
             }
             if (data->meals_eaten == (data->meals_nbr * data->p_total))
             {
 				data->death = 1;
                 printf("%d meals have been eaten\n", data->meals_eaten);
-                pthread_mutex_unlock(data->mutex_death);
+                pthread_mutex_unlock(data->mutex_print);
                 return (NULL);
             }
-            pthread_mutex_unlock(data->mutex_death);
+            pthread_mutex_unlock(data->mutex_print);
             i++;
         }
     }
@@ -90,20 +90,20 @@ void    *routine(void *arg)
 	    ft_usleep(150);
 	while (1)
 	{
-        pthread_mutex_lock(p->data->mutex_death);
+        pthread_mutex_lock(p->data->mutex_print);
 		if (p->data->death == 1)
 			break;
-        pthread_mutex_unlock(p->data->mutex_death);
+        pthread_mutex_unlock(p->data->mutex_print);
 		eat(p);
-		pthread_mutex_lock(p->data->mutex_death);
+		pthread_mutex_lock(p->data->mutex_print);
 		if (p->data->death == 1)
 			break;
-        pthread_mutex_unlock(p->data->mutex_death);
+        pthread_mutex_unlock(p->data->mutex_print);
 		sleep_n_think(p);
-		pthread_mutex_lock(p->data->mutex_death);
+		pthread_mutex_lock(p->data->mutex_print);
 		if (p->data->death == 1)
 			break;
-        pthread_mutex_unlock(p->data->mutex_death);
+        pthread_mutex_unlock(p->data->mutex_print);
 	}
 	return NULL;
 }
@@ -156,15 +156,15 @@ int create_philo(t_philo **philo, t_data *data)
     //     free(philo[i]);
     //     i++;
     // }
-    // free(data->mutex_death);
-    // free(data->mutex_meals);
     // free(data->mutex_print);
-    pthread_mutex_destroy(data->mutex_death);
-    pthread_mutex_destroy(data->mutex_meals);
+    // free(data->mutex_print);
+    // free(data->mutex_print);
+    pthread_mutex_destroy(data->mutex_print);
+    pthread_mutex_destroy(data->mutex_print);
     pthread_mutex_destroy(data->mutex_print);
     //free (data);
     // for (i = 0; i < data->p_total; i++)
     //     pthread_mutex_destroy(&data->mutex_forks[i]);
-	// pthread_mutex_destroy(data->mutex_death);
+	// pthread_mutex_destroy(data->mutex_print);
     return (0);
 }
