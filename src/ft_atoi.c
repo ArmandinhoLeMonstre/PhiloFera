@@ -12,6 +12,35 @@
 
 #include "philo.h"
 
+int	ft_isdigit(int c)
+{
+	if (c <= '9' && c >= '0')
+		return (1);
+	else
+		return (0);
+}
+
+int	ft_check_num(char **av, int ac)
+{
+	int	i;
+	int	x;
+
+	i = 0;
+	x = 1;
+	while (x < ac)
+	{
+		i = 0;
+		while (av[x][i])
+		{
+			if (ft_isdigit(av[x][i]) == 0)
+				return (1);
+			i++;
+		}
+		x++;
+	}
+	return (0);
+}
+
 int	ft_atoi(const char *str)
 {
 	unsigned long int	res;

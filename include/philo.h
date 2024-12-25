@@ -34,8 +34,7 @@ typedef struct s_data
     int meals_eaten;
     pthread_mutex_t *mutex_forks;
     pthread_mutex_t *mutex_print;
-    // pthread_mutex_t *mutex_print;
-    // pthread_mutex_t *mutex_print;
+    pthread_mutex_t *mutex_data;
 } t_data;
 
 typedef struct s_philo
@@ -55,5 +54,6 @@ int	ft_usleep(long long time);
 int	ft_atoi(const char *str);
 long long	time_now(void);
 int create_philo(t_philo **philo, t_data *test);
+int	ft_check_num(char **av, int ac);
 
 #endif
