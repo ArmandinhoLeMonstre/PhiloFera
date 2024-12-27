@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 18:12:10 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/24 17:32:31 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/27 13:33:08 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	allocate_forks(t_data *data)
 			}
 			return (free(data), 1);
 		}
+		usleep(1000);
 		i++;
 	}
 	return (0);
@@ -68,6 +69,7 @@ int	init_philo(t_data *data)
 		philo[i] = malloc(sizeof(t_philo));
 		philo[i]->n = i + 1;
 		philo[i]->time = 0;
+		philo[i]->dead = 0;
 		philo[i]->data = malloc(sizeof(t_data));
 		philo[i]->data = data;
 		philo[i]->left_fork = &data->mutex_forks[philo[i]->n - 1];

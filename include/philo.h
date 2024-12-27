@@ -6,7 +6,7 @@
 /*   By: armitite <armitite@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:59:01 by armitite          #+#    #+#             */
-/*   Updated: 2024/12/24 17:32:13 by armitite         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:40:21 by armitite         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_philo
     int n;
     int fork_left;
     int fork_right;
+    int dead;
     long long time;
     long long t_last_meal;
     pthread_mutex_t *left_fork;
@@ -55,5 +56,8 @@ int	ft_atoi(const char *str);
 long long	time_now(void);
 int create_philo(t_philo **philo, t_data *test);
 int	ft_check_num(char **av, int ac);
+void	*monitoring(void *arg);
+int check_meals(t_data *data);
+int philo_dead(t_philo *p, t_data *data);
 
 #endif
